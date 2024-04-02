@@ -5,8 +5,8 @@ pipeline {
         stage('Check Queue') {
             steps {
                 script {
-                    def queue = Jenkins.instance.queue
-                    if (queue.items) {
+                    def queueSize = currentBuild.rawBuild.executor.currentExecutable.executor.queue.items.size()
+                    if (queueSize > 1) {
                         echo "A build is queued, aborting the current build"
                         currentBuild.result = 'ABORTED'
                         error "Build aborted due to a queued build"
