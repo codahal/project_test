@@ -5,7 +5,8 @@ pipeline {
         stage('Check Queue') {
             steps {
                 script {
-                    if (currentBuild.rawBuild.executor.isBusy()) {
+                    def isInQueue = currentBuild.rawBuild.isBuilding() || currentBuild.rawBuild.isLogUpdated()
+                    if (isInQueue) {
                         echo "A build is queued, aborting the current build"
                         currentBuild.result = 'ABORTED'
                         error "Build aborted due to a queued build"
