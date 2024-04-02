@@ -7,7 +7,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          H@rsh@ trigger jenkins
+          H@rsh@ trigger jenkins build
         </p>
         <a
           className="App-link"
