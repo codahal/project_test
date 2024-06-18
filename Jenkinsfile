@@ -37,12 +37,12 @@ pipeline {
                     // Ensure PM2 is installed globally
                     sh 'npm install pm2 -g'
 
-                    // Start or restart the application using PM2 with ecosystem.config.js
+                    // Start or restart the specific PM2 process for project_test
                     sh '''
-                    if pm2 describe all > /dev/null; then
-                        pm2 restart echosystem.config.js --env production
+                    if pm2 describe project_test > /dev/null; then
+                        pm2 restart project_test --env production
                     else
-                        pm2 start echosystem.config.js --env production
+                        pm2 start echosystem.config.js --env production --only project_test
                     fi
                     '''
                 }
