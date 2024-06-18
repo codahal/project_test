@@ -1,31 +1,40 @@
 pipeline {
     agent any
     
-    // Specify Node.js tool installation
     tools {
         nodejs 'Nodejs'
     }
     
     stages {
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
-                // Install dependencies and build
+                // Install dependencies
                 sh 'npm install'
-                sh 'npm run build'
             }
         }
         
-        stage('Starting') {
+        stage('Build') {
             steps {
-                // Start application (if needed)
-                echo "Application start"
+                // Build the project
+                sh 'npm run build'
             }
         }
         
         stage('Deploy') {
             steps {
-                // Restart all PM2 processes
-                sh 'pm2 restart all'
+                script {
+                    // Ensure PM2 is installed globally
+                    sh 'npm install pm2 -g'
+                    
+                    // Start or restart the application using PM2 with ecosystem.config.js
+                    sh '''
+                    if pm2 describe all > /dev/null; then
+                        pm2 restart echosystem.config.js --env production
+                    else
+                        pm2 start echosystem.config.js --env production
+                    fi
+                    '''
+                }
             }
         }
     }
@@ -42,6 +51,3 @@ pipeline {
         }
     }
 }
-
-
-     
