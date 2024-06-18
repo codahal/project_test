@@ -1,26 +1,36 @@
 pipeline {
     agent any
-    tools {
-        nodejs 'Nodejs'
+    environment {
+        NODE_ENV = 'production'  // Set the environment variable if needed
     }
-    
     stages {
-        stage('Build') {
+        stage('Clone Repository') {
             steps {
+                // Clone the repository
+                git 'https://your-git-repository-url.git'
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                // Install dependencies
                 sh 'npm install'
-                 sh 'npm run build'
             }
         }
-        stage('starting') {
+        stage('Start Application with PM2') {
             steps {
-                //sh 'npm start'
-                echo "start"
-       
-                
-
+                // Start the application using PM2
+                sh 'pm2 start ecosystem.config.js --env production'
             }
-        }
-        
-        
         }
     }
+    post {
+        always {
+            // Ensure PM2 list is available for debugging
+            sh 'pm2 list'
+        }
+        failure {
+            // Print PM2 logs on failure
+            sh 'pm2 logs'
+        }
+    }
+}
