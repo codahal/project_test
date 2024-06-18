@@ -6,46 +6,41 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout the repository
-                git 'https://github.com/codahal/project_f.git'
-            }
-        }
-        
         stage('Install Dependencies') {
             steps {
                 // Install Node.js dependencies
                 sh 'npm install'
             }
         }
-        
-        stage('Build and Start Application') {
+
+        stage('Start Application with PM2') {
             steps {
-                // Build and start application using PM2
+                // Install PM2 globally (if not already installed)
+                sh 'npm install pm2 -g'
+                // Start application using PM2
                 sh 'pm2 start echosystem.config.js --env production'
             }
         }
     }
-    
+
     post {
         always {
             // List PM2 processes for debugging purposes
             sh 'pm2 list'
         }
-        
+
         failure {
             // Print PM2 logs on failure
             sh 'pm2 logs'
         }
     }
-    
+
     // Configure webhook to trigger this pipeline automatically
     options {
         buildDiscarder(logRotator(numToKeepStr: '10'))
         disableConcurrentBuilds()
     }
-    
+
     triggers {
         // GitHub webhook trigger
         githubPush()
