@@ -34,9 +34,6 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Ensure PM2 is installed globally
-                    sh 'npm install pm2 -g'
-
                     // Start or restart the specific PM2 process for project_test
                     sh '''
                     if pm2 describe project_test > /dev/null; then
@@ -67,6 +64,7 @@ pipeline {
         githubPush()
     }
 }
+
 
        
      
