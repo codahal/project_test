@@ -1,48 +1,28 @@
 pipeline {
     agent any
-
-    environment {
-        NODE_ENV = 'production'
+    tools {
+        nodejs 'Nodejs'
     }
-
+    
     stages {
-        stage('Install Dependencies') {
+        stage('Build') {
             steps {
-                // Install Node.js dependencies
                 sh 'npm install'
+                 sh 'npm run build'
             }
         }
-
-        stage('Start Application with PM2') {
+        stage('starting') {
             steps {
-                // Install PM2 globally (if not already installed)
-                sh 'npm install pm2 -g'
-                // Start application using PM2
-                sh 'pm2 start echosystem.config.js --env production'
+                //sh 'npm start'
+                echo "start"  
+
+
+                
             }
         }
-    }
-
-    post {
-        always {
-            // List PM2 processes for debugging purposes
-            sh 'pm2 list'
-        }
-
-        failure {
-            // Print PM2 logs on failure
-            sh 'pm2 logs'
+        
+        
         }
     }
 
-    // Configure webhook to trigger this pipeline automatically
-    options {
-        buildDiscarder(logRotator(numToKeepStr: '10'))
-        disableConcurrentBuilds()
-    }
-
-    triggers {
-        // GitHub webhook trigger
-        githubPush()
-    }
-}
+     
