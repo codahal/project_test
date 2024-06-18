@@ -7,7 +7,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 // Clone the repository
-                git 'https://your-git-repository-url.git'
+                git 'https://github.com/codahal/project_f.git'
             }
         }
         stage('Install Dependencies') {
