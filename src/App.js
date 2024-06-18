@@ -7,7 +7,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-           trigger to Jenkins 3
+           trigger to Jenkins 
         </p>
         <a
           className="App-link"
