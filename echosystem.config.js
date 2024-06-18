@@ -2,17 +2,14 @@ module.exports = {
   apps: [
     {
       name: 'project_test',
-      script: 'app.js', // Replace with the entry point of your application
-      instances: 'max', // Or a number of instances you want to run
-      autorestart: true,
-      watch: false,
-      max_memory_restart: '1G',
+      script: 'app.js', // Adjust the script name/path as necessary
       env: {
-        NODE_ENV: 'development'
+        NODE_ENV: 'production'
       },
       env_production: {
         NODE_ENV: 'production'
       }
-    }
+    },
+    // Other app definitions if any
   ]
 };
