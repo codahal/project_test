@@ -23,7 +23,7 @@ pipeline {
         stage('Build and Start Application') {
             steps {
                 // Build and start application using PM2
-                sh 'pm2 start ecosystem.config.js --env production'
+                sh 'pm2 start echosystem.config.js --env production'
             }
         }
     }
