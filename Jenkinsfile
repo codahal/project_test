@@ -12,22 +12,31 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                // Clone the repository to fetch the latest changes
-                git 'https://github.com/codahal/project_f.git'
+                script {
+                    // Clone the repository to fetch the latest changes
+                    echo 'Cloning repository...'
+                    git 'https://github.com/codahal/project_f.git'
+                }
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Install dependencies
-                sh 'npm install'
+                script {
+                    // Install dependencies
+                    echo 'Installing dependencies...'
+                    sh 'npm install'
+                }
             }
         }
 
         stage('Build') {
             steps {
-                // Build the project
-                sh 'npm run build'
+                script {
+                    // Build the project
+                    echo 'Building the project...'
+                    sh 'npm run build'
+                }
             }
         }
 
@@ -35,11 +44,12 @@ pipeline {
             steps {
                 script {
                     // Start or restart the specific PM2 process for project_test
+                    echo 'Deploying the application...'
                     sh '''
                     if pm2 describe project_test > /dev/null; then
                         pm2 restart project_test --env production
                     else
-                        pm2 start echosystem.config.js --env production --only project_test
+                        pm2 start ecosystem.config.js --env production --only project_test
                     fi
                     '''
                 }
@@ -49,13 +59,19 @@ pipeline {
 
     post {
         always {
-            // List PM2 processes for debugging purposes
-            sh 'pm2 list'
+            script {
+                // List PM2 processes for debugging purposes
+                echo 'Listing PM2 processes...'
+                sh 'pm2 list'
+            }
         }
 
         failure {
-            // Print PM2 logs on failure
-            sh 'pm2 logs'
+            script {
+                // Print PM2 logs on failure
+                echo 'Build failed. Printing PM2 logs...'
+                sh 'pm2 logs'
+            }
         }
     }
 
@@ -64,7 +80,6 @@ pipeline {
         githubPush()
     }
 }
-
 
        
      
