@@ -1,62 +1,82 @@
-tools {
-    nodejs 'Nodejs'
-}
+pipeline {
+    agent any
 
-environment {
-    NODE_ENV = 'production'
-}
-
-stages {
-    stage('Clone Repository') {
-        steps {
-            // Clone the repository to fetch the latest changes
-            git 'https://github.com/codahal/project_f.git'
-        }
+    tools {
+        nodejs 'Nodejs'
     }
 
-    stage('Install Dependencies') {
-        steps {
-            // Install dependencies
-            sh 'npm install'
-        }
+    environment {
+        NODE_ENV = 'production'
     }
 
-    stage('Build') {
-        steps {
-            // Build the project
-            sh 'npm run build'
+    stages {
+        stage('Clone Repository') {
+            steps {
+                script {
+                    // Clone the repository to fetch the latest changes
+                    echo 'Cloning repository...'
+                    git 'https://github.com/codahal/project_f.git'
+                }
+            }
         }
-    }
 
-    stage('Deploy') {
-        steps {
-            script {
-                // Start or restart the specific PM2 process for project_test
-                sh '''
-                if pm2 describe project_test > /dev/null; then
-                    pm2 restart project_test --env production
-                else
-                    pm2 start echosystem.config.js --env production --only project_test
-                fi
-                '''
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    // Install dependencies
+                    echo 'Installing dependencies...'
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    // Build the project
+                    echo 'Building the project...'
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    // Start or restart the specific PM2 process for project_test
+                    echo 'Deploying the application...'
+                    sh '''
+                    if pm2 describe project_test > /dev/null; then
+                        pm2 restart project_test --env production
+                    else
+                        pm2 start echosystem.config.js --env production --only project_test
+                    fi
+                    '''
+                }
             }
         }
     }
-}
 
-post {
-    always {
-        // List PM2 processes for debugging purposes
-        sh 'pm2 list'
+    post {
+        always {
+            script {
+                // List PM2 processes for debugging purposes
+                echo 'Listing PM2 processes...'
+                sh 'pm2 list'
+            }
+        }
+
+        failure {
+            script {
+                // Print PM2 logs on failure
+                echo 'Build failed. Printing PM2 logs...'
+                sh 'pm2 logs'
+            }
+        }
     }
 
-    failure {
-        // Print PM2 logs on failure
-        sh 'pm2 logs'
+    triggers {
+        // GitHub webhook trigger
+        githubPush()
     }
-}
-
-triggers {
-    // GitHub webhook trigger
-    githubPush()
 }
