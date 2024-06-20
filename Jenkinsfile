@@ -19,9 +19,9 @@ pipeline {
                     // Start or restart the application using PM2 with ecosystem.config.js
                     sh '''
                     if pm2 describe all > /dev/null; then
-                        pm2 restart echosystem.config.js --env production
+                        pm2 restart project_test
                     else
-                        pm2 start echosystem.config.js --env production
+                         pm2 restart project_test
                     fi
                     '''
                 }
