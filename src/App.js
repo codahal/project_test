@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+pipeline {
+    agent any
+    tools {
+        nodejs 'Nodejs'
+    }
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-           trigger to Jenkins 
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          JENKINS Harsha 123
-        </a>
-      </header>
-    </div>
-  );
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Checkout the latest code from your repository
+                checkout scm
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+        stage('Restart with PM2') {
+            steps {
+                script {
+                    // Restart the application using PM2
+                    sh 'pm2 restart project_test || pm2 start echosystem.config.js --env production'
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Build and deployment successful!'
+        }
+        failure {
+            echo 'Build or deployment failed.'
+        }
+    }
 }
-
-export default App;
