@@ -34,8 +34,14 @@ pipeline {
         stage('Stop PM2 Process') {
             steps {
                 script {
-                    // Stop the specific PM2 process for project_test
-                    sh 'pm2 stop project_test || true'
+                    // Stop the specific PM2 process for project_test if it is running
+                    sh '''
+                    if pm2 describe project_test > /dev/null; then
+                        pm2 stop project_test
+                    else
+                        echo "PM2 process project_test is not running"
+                    fi
+                    '''
                 }
             }
         }
@@ -58,3 +64,5 @@ pipeline {
         githubPush()
     }
 }
+
+         
