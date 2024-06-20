@@ -8,19 +8,28 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'npm install'
-                 sh 'npm run build'
+                sh 'npm run build'
             }
         }
-        stage('starting') {
+        stage('Starting') {
             steps {
                 sh 'npm start'
-               // echo "start"
-       
-                
-
             }
         }
-        
-        
+        stage('Restart PM2') {
+            steps {
+                sh 'pm2 restart project_test'
+            }
         }
     }
+    post {
+        success {
+            echo 'Build and deployment successful!'
+        }
+        failure {
+            echo 'Build or deployment failed.'
+        }
+    }
+}
+
+
