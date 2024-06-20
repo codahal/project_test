@@ -31,17 +31,11 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Stop PM2 Process') {
             steps {
                 script {
-                    // Start or restart the specific PM2 process for project_test
-                    sh '''
-                    if pm2 describe project_test > /dev/null; then
-                        pm2 restart project_test --env production
-                    else
-                        pm2 start echosystem.config.js --env production --only project_test
-                    fi
-                    '''
+                    // Stop the specific PM2 process for project_test
+                    sh 'pm2 stop project_test || true'
                 }
             }
         }
