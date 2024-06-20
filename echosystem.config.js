@@ -1,17 +1,19 @@
 module.exports = {
   apps: [
     {
-      name: 'project_test',  // Change this to your application name
-      script: 'npm',
-      args: 'start',
-      instances: 'max',
-      exec_mode: 'cluster',
+      name: "project_test",
+      script: "npm",
+      args: "start",
+      watch: true,
+      ignore_watch: ["node_modules"],
+      instances: 1,
+      autorestart: true,
+      max_memory_restart: "1G",
       env: {
-        NODE_ENV: 'development',
+        NODE_ENV: "production",
       },
-      env_production: {
-        NODE_ENV: 'production',
-      }
-    }
-  ]
+    },
+  ],
 };
+
+
