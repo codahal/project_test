@@ -1,37 +1,25 @@
-pipeline {
-    agent any
-    tools {
-        nodejs 'Nodejs'
-    }
-    
-    stages {
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'npm run build'
-            }
-        }
-        stage('Start with PM2') {
-            steps {
-                script {
-                    // Start the application using PM2
-                    sh 'pm2 start project_test'
-                }
-            }
-        }
-    }
-    post {
-        success {
-            echo 'Build and deployment successful!'
-        }
-        failure {
-            echo 'Build or deployment failed.'
-        }
-    }
+import logo from './logo.svg';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+           trigger to Jenkins 
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          JENKINS Harsha 2
+        </a>
+      </header>
+    </div>
+  );
 }
 
-   
+export default App;
