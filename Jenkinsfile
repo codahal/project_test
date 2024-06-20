@@ -16,9 +16,6 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Ensure PM2 is installed globally
-                    sh 'npm install pm2 -g'
-                    
                     // Start or restart the application using PM2 with ecosystem.config.js
                     sh '''
                     if pm2 describe all > /dev/null; then
