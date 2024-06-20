@@ -5,20 +5,22 @@ pipeline {
     }
     
     stages {
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
                 sh 'npm install'
+            }
+        }
+        stage('Build') {
+            steps {
                 sh 'npm run build'
             }
         }
-        stage('Starting') {
+        stage('Start with PM2') {
             steps {
-                sh 'npm start'
-            }
-        }
-        stage('Restart PM2') {
-            steps {
-                sh 'pm2 restart project_test'
+                script {
+                    // Start the application using PM2
+                    sh 'pm2 start project_test'
+                }
             }
         }
     }
@@ -32,4 +34,4 @@ pipeline {
     }
 }
 
-
+   
