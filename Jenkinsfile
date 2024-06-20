@@ -6,7 +6,7 @@ pipeline {
     }
     
     environment {
-        PROJECT_DIR = "/Users/ecorfyinc/project_f " // Update with your actual project directory path
+        PROJECT_DIR = "/Users/ecorfyinc/project_f" // Update with your actual project directory path
     }
     
     stages {
