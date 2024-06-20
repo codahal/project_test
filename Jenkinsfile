@@ -5,11 +5,30 @@ pipeline {
         nodejs 'Nodejs'
     }
     
+    environment {
+        // Define the local directory where you want to pull the code
+        LOCAL_CODE_DIR = "/Users/ecorfyinc/project_f"
+    }
+    
     stages {
+        stage('Checkout') {
+            steps {
+                // Clean the local directory if it already exists
+                deleteDir()
+
+                // Pull the code from your public repository to the local directory
+                git url: 'https://github.com/codahal/project_test.git'
+            }
+        }
+
         stage('Build') {
             steps {
-                // Build the project
-                sh 'npm run build'
+                // Change directory to your local code directory
+                dir(LOCAL_CODE_DIR) {
+                    // Build the project
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
             }
         }
         
@@ -17,13 +36,15 @@ pipeline {
             steps {
                 script {
                     // Start or restart the application using PM2 with ecosystem.config.js
-                    sh '''
-                    if pm2 describe all > /dev/null; then
-                        pm2 restart project_test
-                    else
-                         pm2 restart project_test
-                    fi
-                    '''
+                    dir(LOCAL_CODE_DIR) {
+                        sh '''
+                        if pm2 describe all > /dev/null; then
+                            pm2 restart project_test
+                        else
+                            pm2 restart project_test
+                        fi
+                        '''
+                    }
                 }
             }
         }
@@ -32,12 +53,16 @@ pipeline {
     post {
         always {
             // List PM2 processes for debugging purposes
-            sh 'pm2 list'
+            dir(LOCAL_CODE_DIR) {
+                sh 'pm2 list'
+            }
         }
         
         failure {
             // Print PM2 logs on failure
-            sh 'pm2 logs'
+            dir(LOCAL_CODE_DIR) {
+                sh 'pm2 logs'
+            }
         }
     }
 }
