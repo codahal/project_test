@@ -1,68 +1,55 @@
 pipeline {
     agent any
-    tools {
-        nodejs 'Nodejs'  // Assuming 'Nodejs' is the name of your Node.js installation in Jenkins
-    }
-    environment {
-        GITHUB_REPO = 'https://github.com/codahal/project_test.git'
-        LOCAL_DIR = '/Users/ecorfyinc/project_test'  // Ensure this directory is writable by Jenkins
-    }
+    
     stages {
-        stage('Verify Git') {
+        stage('Checkout') {
             steps {
-                sh 'git --version'
+                checkout scm
             }
         }
-        stage('Verify Node.js') {
-            steps {
-                sh 'node --version'
-                sh 'npm --version'
-            }
-        }
-        stage('Clone Repository') {
-            steps {
-                git url: "${env.GITHUB_REPO}", branch: 'main'
-            }
-        }
+        
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
             }
         }
+        
         stage('Build') {
             steps {
                 sh 'npm run build'
             }
         }
+        
         stage('Start with PM2') {
             steps {
-                script {
-                    // Start the application using PM2
-                    sh 'pm2 start project_test'
-                }
+                sh 'pm2 start project_test'
             }
         }
+        
         stage('Copy Files') {
             steps {
                 script {
-                    def sourceDir = "${env.WORKSPACE}"
-                    def destinationDir = "${env.LOCAL_DIR}"
+                    def sourceDir = "${env.WORKSPACE}" // Jenkins workspace
+                    def destinationDir = "/Users/ecorfyinc/project_test" // Destination directory
+                    
+                    // Ensure destination directory exists
+                    sh "mkdir -p ${destinationDir}"
+                    
+                    // Use rsync with proper quoting to handle spaces in path
                     sh """
-                       /bin/bash -c 'mkdir -p ${destinationDir} && rsync -av --exclude=".git" ${sourceDir}/ ${destinationDir}/'
+                       rsync -av --exclude=".git" "${sourceDir}/" "${destinationDir}/"
                     """
                 }
             }
         }
     }
+    
     post {
-        success {
-            echo 'Build and deployment successful!'
-        }
-        failure {
-            echo 'Build or deployment failed.'
+        always {
+            echo 'Build or deployment finished.'
         }
     }
 }
 
-        
        
+      
