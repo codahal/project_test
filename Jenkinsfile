@@ -1,8 +1,7 @@
 pipeline {
     agent any
     tools {
-        nodejs 'Nodejs'
-        git 'Default'
+        nodejs 'Nodejs'  // Assuming 'Nodejs' is the name of your Node.js installation in Jenkins
     }
     environment {
         GITHUB_REPO = 'https://github.com/codahal/project_test.git'
@@ -64,3 +63,6 @@ pipeline {
         }
     }
 }
+
+        
+       
