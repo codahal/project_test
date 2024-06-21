@@ -3,8 +3,16 @@ pipeline {
     tools {
         nodejs 'Nodejs'
     }
-    
+    environment {
+        GITHUB_REPO = 'https://github.com/codahal/https://github.com/codahal/project_test.git'
+        LOCAL_DIR = '/Users/ecorfyinc/project_test'
+    }
     stages {
+        stage('Clone Repository') {
+            steps {
+                git url: "${env.GITHUB_REPO}", branch: 'main'
+            }
+        }
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
@@ -23,6 +31,15 @@ pipeline {
                 }
             }
         }
+        stage('Copy Files') {
+            steps {
+                script {
+                    def sourceDir = "${env.WORKSPACE}"
+                    def destinationDir = "${env.LOCAL_DIR}"
+                    sh "cp -r ${sourceDir}/* ${destinationDir}/"
+                }
+            }
+        }
     }
     post {
         success {
@@ -33,3 +50,5 @@ pipeline {
         }
     }
 }
+
+    
