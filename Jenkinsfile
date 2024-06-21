@@ -4,7 +4,7 @@ pipeline {
         nodejs 'Nodejs'
     }
     environment {
-        GITHUB_REPO = 'https://github.com/codahal/https://github.com/codahal/project_test.git'
+        GITHUB_REPO = 'https://github.com/codahal/project_test.git'
         LOCAL_DIR = '/Users/ecorfyinc/project_test'
     }
     stages {
