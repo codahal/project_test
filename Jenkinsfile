@@ -1,46 +1,27 @@
 pipeline {
     agent any
 
+    triggers {
+        pollSCM('H/5 * * * *') // Poll the GitHub repository every 5 minutes
+    }
+
     environment {
-        PROJECT_DIR = "/Users/ecorfyinc/project_test"
+        GIT_REPO = 'https://github.com/codahal/project_test.git'
+        LOCAL_FILE_PATH = '/Users/ecorfyinc/project_test'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Clone Repository') {
             steps {
-                checkout scm
+                git branch: 'main', url: "${env.GIT_REPO}"
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Update Local File') {
             steps {
                 script {
-                    sh 'npm install'
-                }
-            }
-        }
-
-        stage('Build') {
-            steps {
-                script {
-                    sh 'npm run build'
-                }
-            }
-        }
-
-        stage('Copy Files') {
-            steps {
-                script {
-                    sh "mkdir -p ${PROJECT_DIR}"
-                    sh "rsync -av --exclude='.git' ${WORKSPACE}/ ${PROJECT_DIR}/"
-                }
-            }
-        }
-
-        stage('Restart PM2') {
-            steps {
-                script {
-                    sh "pm2 restart ${PROJECT_DIR}/pm2 restart project_test"
+                    def repoFileContent = readFile 'path/in/repo/file.txt'
+                    writeFile file: "${env.LOCAL_FILE_PATH}", text: repoFileContent
                 }
             }
         }
@@ -48,9 +29,10 @@ pipeline {
 
     post {
         always {
-            echo 'Pipeline execution completed.'
+            echo 'Pipeline finished.'
         }
     }
 }
 
-      
+
+       
