@@ -1,37 +1,54 @@
 pipeline {
     agent any
-    tools {
-        nodejs 'Nodejs'
+
+    environment {
+        PROJECT_DIR = "/Users/ecorfyinc/project_test"
     }
-    
+
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                script {
+                    sh 'npm install'
+                }
             }
         }
+
         stage('Build') {
             steps {
-                sh 'npm run build'
+                script {
+                    sh 'npm run build'
+                }
             }
         }
+
         stage('Start with PM2') {
             steps {
                 script {
-                    // Start the application using PM2
                     sh 'pm2 start project_test'
                 }
             }
         }
-    }
-    post {
-        success {
-            echo 'Build and deployment successful!'
+
+        stage('Copy Files') {
+            steps {
+                script {
+                    sh "mkdir -p ${PROJECT_DIR}"
+                    sh "rsync -av --exclude='.git' ${WORKSPACE}/ ${PROJECT_DIR}/"
+                }
+            }
         }
-        failure {
-            echo 'Build or deployment failed.'
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution completed.'
         }
     }
 }
-     
-        
