@@ -1,38 +1,37 @@
 pipeline {
     agent any
-
-    triggers {
-        pollSCM('H/5 * * * *') // Poll the GitHub repository every 5 minutes
+    tools {
+        nodejs 'Nodejs'
     }
-
-    environment {
-        GIT_REPO = 'https://github.com/codahal/project_test.git'
-        LOCAL_FILE_PATH = '/Users/ecorfyinc/project_test'
-    }
-
+    
     stages {
-        stage('Clone Repository') {
+        stage('Install Dependencies') {
             steps {
-                git branch: 'main', url: "${env.GIT_REPO}"
+                sh 'npm install'
             }
         }
-
-        stage('Update Local File') {
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+        stage('Start with PM2') {
             steps {
                 script {
-                    def repoFileContent = readFile 'path/in/repo/file.txt'
-                    writeFile file: "${env.LOCAL_FILE_PATH}", text: repoFileContent
+                    // Start the application using PM2
+                    sh 'pm2 start project_test'
                 }
             }
         }
     }
-
     post {
-        always {
-            echo 'Pipeline finished.'
+        success {
+            echo 'Build and deployment successful!'
+        }
+        failure {
+            echo 'Build or deployment failed.'
         }
     }
 }
-
-
-       
+     
+        
