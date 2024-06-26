@@ -9,7 +9,7 @@ pipeline {
             steps {
                 script {
                     // Use the SSH credentials for pulling the latest changes
-                    sshagent(credentials: ['github_ssh_agent']) {
+                    sshagent(credentials: ['github-ssh-key']) {  // Ensure this matches the ID you set in Jenkins
                         sh 'git pull origin main'  // Replace 'main' with your branch name if different
                     }
                 }
@@ -43,3 +43,5 @@ pipeline {
         }
     }
 }
+
+         
