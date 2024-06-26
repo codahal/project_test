@@ -3,33 +3,45 @@ pipeline {
     tools {
         nodejs 'Nodejs'
     }
+
+    environment {
+        LOCAL_PATH = "cd/Users/ecorfyinc/project_test" // Update this path to your local directory
+    }
     
     stages {
         stage('Update Local Repository') {
             steps {
-                script {
-                    // Use the SSH credentials for pulling the latest changes
-                    sshagent(credentials: ['github-ssh-key']) {  // Ensure this matches the ID you set in Jenkins
-                        sh 'git pull origin main'  // Replace 'main' with your branch name if different
+                dir("${env.LOCAL_PATH}") {
+                    script {
+                        // Use the SSH credentials for pulling the latest changes
+                        sshagent(credentials: ['github-ssh-key']) {  // Ensure this matches the ID set in Jenkins
+                            sh 'git pull origin main'  // Replace 'main' with your branch name if different
+                        }
                     }
                 }
             }
         }
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                dir("${env.LOCAL_PATH}") {
+                    sh 'npm install'
+                }
             }
         }
         stage('Build') {
             steps {
-                sh 'npm run build'
+                dir("${env.LOCAL_PATH}") {
+                    sh 'npm run build'
+                }
             }
         }
         stage('Start with PM2') {
             steps {
-                script {
-                    // Start the application using PM2
-                    sh 'pm2 start project_test'
+                dir("${env.LOCAL_PATH}") {
+                    script {
+                        // Start the application using PM2
+                        sh 'pm2 start project_test'
+                    }
                 }
             }
         }
@@ -44,4 +56,4 @@ pipeline {
     }
 }
 
-         
+     
