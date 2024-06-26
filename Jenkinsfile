@@ -5,7 +5,7 @@ pipeline {
     }
 
     environment {
-        LOCAL_PATH = "/Users/ecorfyinc/project_test" // Update this path to your local directory
+        LOCAL_PATH = "/Users/ecorfyinc/project_test" 
     }
     
     stages {
@@ -13,9 +13,9 @@ pipeline {
             steps {
                 dir("${env.LOCAL_PATH}") {
                     script {
-                        // Use the SSH credentials for pulling the latest changes
-                        sshagent(credentials: ['github-ssh-key']) {  // Ensure this matches the ID set in Jenkins
-                            sh 'git pull origin main'  // Replace 'main' with your branch name if different
+                        
+                        sshagent(credentials: ['github-ssh-key']) {  
+                            sh 'git pull origin main'  
                         }
                     }
                 }
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 dir("${env.LOCAL_PATH}") {
                     script {
-                        // Start the application using PM2
+                        
                         sh 'pm2 start project_test'
                     }
                 }
