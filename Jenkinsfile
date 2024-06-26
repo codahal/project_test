@@ -9,7 +9,7 @@ pipeline {
             steps {
                 script {
                     // Use the SSH credentials for pulling the latest changes
-                    sshagent(credentials: ['ssh_agent']) {
+                    sshagent(credentials: ['github_ssh_agent']) {
                         sh 'git pull origin main'  // Replace 'main' with your branch name if different
                     }
                 }
