@@ -5,7 +5,7 @@ pipeline {
     }
 
     environment {
-        LOCAL_PATH = "cd/Users/ecorfyinc/project_test" // Update this path to your local directory
+        LOCAL_PATH = "/Users/ecorfyinc/project_test" // Update this path to your local directory
     }
     
     stages {
@@ -56,4 +56,5 @@ pipeline {
     }
 }
 
-     
+        
+   
