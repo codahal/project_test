@@ -5,6 +5,16 @@ pipeline {
     }
     
     stages {
+        stage('Update Local Repository') {
+            steps {
+                script {
+                    // Use the SSH credentials for pulling the latest changes
+                    sshagent(credentials: ['ssh_agent']) {
+                        sh 'git pull origin main'  // Replace 'main' with your branch name if different
+                    }
+                }
+            }
+        }
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
@@ -33,6 +43,3 @@ pipeline {
         }
     }
 }
-     
-
-       
